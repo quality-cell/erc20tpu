@@ -1,7 +1,7 @@
 # ERC20TPU
 Basic implementation of ERC20 with tests
 
-Etherscan ERC20TPU: https://ropsten.etherscan.io/address/0x4aDD822C411005a5D2Ec8d798B6b4Ce47373232e#code                                                           
+Etherscan ERC20TPU: https://ropsten.etherscan.io/address/0x1B0D96a1937E4D6D4F3859551e51A3362fC6Cf4e#code                                                           
 
 ## This project has the following features
 

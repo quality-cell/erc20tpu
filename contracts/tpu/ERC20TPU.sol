@@ -23,8 +23,8 @@ contract ERC20TPU {
      * @param value The amount of tokens that are involved in the transaction
      */
     event Transfer(
-        address from,
-        address to,
+        address indexed from,
+        address indexed to,
         uint256 value
     );
 
@@ -36,8 +36,8 @@ contract ERC20TPU {
      * @param value The amount of tokens that are involved in the transaction
      */
     event Approval(
-        address owner,
-        address spender,
+        address indexed owner,
+        address indexed spender,
         uint256 value
     );
 
@@ -50,28 +50,28 @@ contract ERC20TPU {
     /**
      * @notice The function returns the name of the token
      */
-    function name() external view returns(string memory) {
+    function name() public view virtual returns(string memory) {
         return _name;
     }
 
     /**
      * @notice The function returns the symbol of the token
      */
-    function symbol() external view returns(string memory) {
+    function symbol() public view virtual returns(string memory) {
         return _symbol;
     }
 
     /**
      * @notice The function returns the total supply of tokens
      */
-    function totalSupply() external view returns(uint256) {
+    function totalSupply() public view virtual returns(uint256) {
         return _totalSupply;
     }
 
     /**
      * @notice The function returns the decimal places of the token
      */
-    function decimals() external pure returns(uint8) {
+    function decimals() public view virtual returns(uint8) {
         return 18;
     }
 
@@ -79,7 +79,7 @@ contract ERC20TPU {
      * @notice The function returns the user's balance
      * @param account User address
      */
-    function balanceOf(address account) external view returns(uint256) {
+    function balanceOf(address account) public view virtual returns(uint256) {
         return _balances[account];
     }
 
@@ -88,7 +88,7 @@ contract ERC20TPU {
      * @param recipient Address where funds are credited
      * @param amount The amount of tokens that are involved in the transaction
      */
-    function transfer(address recipient, uint256 amount) external returns(bool) {
+    function transfer(address recipient, uint256 amount) public virtual returns(bool) {
         _transfer(msg.sender, recipient, amount);
 
         return true;
@@ -99,7 +99,7 @@ contract ERC20TPU {
      * @param owner Address of the owner of the tokens
      * @param spender The address of the user that the owner of the tokens allowed to spend them
      */
-    function allowance(address owner, address spender) external view returns(uint256) {
+    function allowance(address owner, address spender) public view virtual returns(uint256) {
         return _allowance[owner][spender];
     }
 
@@ -108,7 +108,7 @@ contract ERC20TPU {
      * @param amount The amount of tokens that are involved in the transaction
      * @param spender The address of the user that the owner of the tokens allowed to spend them
      */
-    function approve(address spender, uint256 amount) external returns(bool) {
+    function approve(address spender, uint256 amount) public virtual returns(bool) {
         _approve(msg.sender, spender, amount);
 
         return true;
@@ -121,7 +121,7 @@ contract ERC20TPU {
      * @param sender The address of the user who allowed to spend their funds
      * @param recipient The address of the user that the owner of the tokens allowed to spend them
      */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns(bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual returns(bool) {
         _transfer(sender, recipient, amount);
 
         uint256 balance =_allowance[sender][recipient];
@@ -137,7 +137,7 @@ contract ERC20TPU {
      * @param addedValue Funding amount to be added to _allowance
      * @param spender The address of the user who allowed to spend their funds
      */
-    function increaseAllowance(address spender, uint256 addedValue) external  returns(bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual  returns(bool) {
         uint256 balance = _allowance[msg.sender][spender];
 
         _approve(msg.sender, spender, addedValue + balance);
@@ -150,7 +150,7 @@ contract ERC20TPU {
      * @param subtractedValue Amount of funding to be withdrawn from _ allowance
      * @param spender The address of the user who allowed to spend their funds
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) external  returns(bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual  returns(bool) {
         uint256 balance = _allowance[msg.sender][spender];
         require(balance >= subtractedValue, "Invalid amount");
 
@@ -164,7 +164,7 @@ contract ERC20TPU {
      * @param amount Number of tokens to create
      * @param account User address for which tokens are created
      */
-    function mint(address account, uint256 amount) external returns(bool) {
+    function mint(address account, uint256 amount) public virtual returns(bool) {
         require(msg.sender == _owner, "Invalid address");
 
         _mint(account, amount);
@@ -176,7 +176,7 @@ contract ERC20TPU {
      * @notice A function that burns the tokens of the user who called it
      * @param amount Amount of tokens to be burned
      */
-    function burn(uint256 amount) external  returns(bool) {
+    function burn(uint256 amount) public virtual  returns(bool) {
         _burn(msg.sender, amount);
 
         return true;
@@ -188,7 +188,7 @@ contract ERC20TPU {
      * @param amount Amount of tokens to be burned
      * @param account The address of the user who allowed to spend their funds
      */
-    function burnFrom(address account, uint256 amount)  external returns(bool) {
+    function burnFrom(address account, uint256 amount) public virtual returns(bool) {
         _burnFrom(account, amount);
 
         return true;
@@ -200,7 +200,7 @@ contract ERC20TPU {
      * @param sender The address where funds are debited from
      * @param amount The amount of tokens that are involved in the transaction
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal {
+    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
         require(sender != address(0), "Sender invalid address");
         require(recipient != address(0), "Recipient invalid address");
         require(_balances[sender] >= amount, "Invalid amount");
@@ -220,7 +220,7 @@ contract ERC20TPU {
      * @param amount Number of tokens to create
      * @param account User address for which tokens are created
      */
-    function _mint(address account, uint256 amount) internal {
+    function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "Account address invalid");
 
         _balances[account] += amount;
@@ -239,7 +239,7 @@ contract ERC20TPU {
      * @param amount Amount of tokens to be burned
      * @param account The address of the user who allowed to spend their funds
      */
-     function _burnFrom(address account, uint256 amount) internal {
+     function _burnFrom(address account, uint256 amount) internal virtual {
         uint256 balance = _allowance[account][msg.sender];
 
         _burn(account, amount);
@@ -251,7 +251,7 @@ contract ERC20TPU {
      * @param amount Amount of tokens to be burned
      * @param account The address of the user who decided to call the burn function
      */
-    function _burn(address account, uint256 amount) internal {
+    function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "Account addres invalid");
         require(_balances[account] >= amount, "Invalid amount");
 
@@ -271,7 +271,7 @@ contract ERC20TPU {
      * @param spender The address of the user that the owner of the tokens allowed to spend them
      * @param owner Address of the user who allows the spender to spend his tokens
      */
-    function _approve(address owner, address spender, uint256 amount) internal {
+    function _approve(address owner, address spender, uint256 amount) internal virtual {
         require(owner != address(0), "Owner address invalid");
         require(spender != address(0), "Spender address invalid");
 
