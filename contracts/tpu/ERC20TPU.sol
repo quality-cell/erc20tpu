@@ -88,7 +88,7 @@ contract ERC20TPU {
      * @param recipient Address where funds are credited
      * @param amount The amount of tokens that are involved in the transaction
      */
-    function transfer(address recipient, uint256 amount) external payable returns(bool) {
+    function transfer(address recipient, uint256 amount) external returns(bool) {
         _transfer(msg.sender, recipient, amount);
 
         return true;

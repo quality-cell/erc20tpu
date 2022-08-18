@@ -1,7 +1,7 @@
 import { task } from "hardhat/config"
 
-task("mint", "")
-    .addParam("contract", "Create token")
+task("mint", "Create token")
+    .addParam("contract", "Сontract address")
     .addParam("amount", "Amount of ether to be transferred")
     .addParam("account", "Owner's address")
     .addParam("mul", "ten to the power")
@@ -68,10 +68,11 @@ task("transfer", "Perform token transfer")
     .addParam("contract", "Сontract address")
     .addParam("recipient", "Address where funds are credited")
     .addParam("amount", "The number of tokens to be transferred")
+    .addParam("mul", "ten to the power")
     .setAction(async (taskArgs, hre) => {
         const erc20 = await hre.ethers.getContractAt("ERC20TPU", taskArgs.contract)
         
-        await erc20.transfer(taskArgs.recipient, taskArgs.amount)
+        await erc20.transfer(taskArgs.recipient, hre.ethers.utils.parseUnits(String(taskArgs.amount), taskArgs.mul))
 
         console.log("Task is done")
 })
